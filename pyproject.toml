@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "web-hw12"
+version = "0.1.0"
+description = ""
+package-mode = false
+authors = ["Gennadiy Shpak <gena_shpak@ukr.net>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

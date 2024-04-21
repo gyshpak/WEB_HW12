@@ -1,6 +1,8 @@
 from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import Depends
 
+from src.database.db import get_db
 from src.database.models import Contact
 from src.schemas import ContactSchema
 
@@ -55,13 +57,9 @@ async def delete_contact(contact_id: int, db: AsyncSession):
 
 async def search_contacts(field_search, offset: int, limit: int, db: AsyncSession):
     if validate_email(field_search):
-        stmt = (
-            select(Contact)
-            .where(Contact.email == field_search)
-            .offset(offset)
-            .limit(limit)
-        )
+        stmt = select(Contact).filter_by(email=field_search)
         contacts = await db.execute(stmt)
+        
     else:
         stmt = (
             select(Contact)
@@ -89,3 +87,15 @@ async def search_contacts_coming_birthday(offset: int, limit: int, db: AsyncSess
     )
     contacts = await db.execute(stmt)
     return contacts.scalars().all()
+
+
+async def get_contact_by_email(email: str, db: AsyncSession = Depends(get_db)):
+    stmt = select(Contact).filter_by(email=email)
+    user = await db.execute(stmt)
+    user = user.scalar_one_or_none()
+    return user
+
+
+async def update_token(contact: Contact, token: str | None, db: AsyncSession):
+    contact.refresh_token = token
+    await db.commit()

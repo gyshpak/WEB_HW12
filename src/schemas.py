@@ -7,6 +7,7 @@ class ContactSchema(BaseModel):
     email: EmailStr
     phone: str = Field(min_length=10, max_length=13)
     birthday: date  # str #PastDate
+    password: str = Field(min_length=6, max_length=8)
 
 
 class ContactResponse(BaseModel):
@@ -18,3 +19,8 @@ class ContactResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class TokenSchema(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"

@@ -3,12 +3,14 @@ from fastapi import FastAPI, Depends, HTTPException
 
 from src.database.db import get_db
 from src.routes import contacts
+from src.routes import auth
 
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 app = FastAPI()
 
+app.include_router(auth.router, prefix="/api")
 app.include_router(contacts.router, prefix="/api")
 
 

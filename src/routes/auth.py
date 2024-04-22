@@ -20,6 +20,7 @@ get_refresh_token = HTTPBearer()
 async def signup(body: ContactSchema, db: AsyncSession = Depends(get_db)):
     exist_user = await repository_contacts.get_contact_by_email(body.email, db)
     if exist_user:
+        print(exist_user.email)
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT, detail="Account already exists"
         )

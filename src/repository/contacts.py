@@ -37,7 +37,7 @@ async def update_contact(contact_id: int, body: ContactSchema, db: AsyncSession)
     contact = result.scalar_one_or_none()
     if contact:
         contact.name = body.name
-        contact.email = body.email
+        # contact.email = body.email
         contact.phone = body.phone
         contact.birthday = body.birthday
         await db.commit()

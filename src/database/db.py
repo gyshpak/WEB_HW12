@@ -27,9 +27,15 @@ class DatabaseSessionManager:
             yield session
         except Exception as err:
             print(err)
-            await session.rollback()
+            try:
+                await session.rollback()
+            except Exception:
+                print("ERR1")
         finally:
-            await session.close()
+            try:
+                await session.close()
+            except Exception:
+                print("ERR2")
 
 
 sessionmanager = DatabaseSessionManager(DB_URL)
@@ -37,4 +43,7 @@ sessionmanager = DatabaseSessionManager(DB_URL)
 
 async def get_db():
     async with sessionmanager.session() as session:
-        yield session
+        try:
+            yield session
+        except Exception:
+            print("ERR3")

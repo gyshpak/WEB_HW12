@@ -4,11 +4,19 @@ from fastapi import APIRouter, HTTPException, Depends, status, Path, Query, Secu
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database.db import get_db
-from src.schemas import ContactSchema, ContactResponse, TokenSchema  # , ContactUpdateSchema
+from src.schemas import (
+    ContactSchema,
+    ContactResponse,
+    TokenSchema,
+)
 from src.repository import contacts as repository_contacts
 from src.services.auth import auth_service
 
-from fastapi.security import HTTPBearer, OAuth2PasswordRequestForm, HTTPAuthorizationCredentials
+from fastapi.security import (
+    HTTPBearer,
+    OAuth2PasswordRequestForm,
+    HTTPAuthorizationCredentials,
+)
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 get_refresh_token = HTTPBearer()
@@ -30,7 +38,9 @@ async def signup(body: ContactSchema, db: AsyncSession = Depends(get_db)):
 
 
 @router.post("/login", response_model=TokenSchema)
-async def login(body: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
+async def login(
+    body: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)
+):
     user = await repository_contacts.get_contact_by_email(body.username, db)
     if user is None:
         raise HTTPException(
@@ -41,9 +51,7 @@ async def login(body: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = 
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid password"
         )
     # Generate JWT
-    access_token = await auth_service.create_access_token(
-        data={"sub": user.email}
-    )
+    access_token = await auth_service.create_access_token(data={"sub": user.email})
     refresh_token = await auth_service.create_refresh_token(data={"sub": user.email})
     await repository_contacts.update_token(user, refresh_token, db)
     return {

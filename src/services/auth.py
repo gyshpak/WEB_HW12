@@ -96,8 +96,6 @@ class Auth:
                 raise credentials_exception
         except JWTError as e:
             raise credentials_exception
-
-        # db: AsyncSession = Depends(get_db)
         user = await repository_users.get_contact_by_email(email, db)
         if user is None:
             raise credentials_exception

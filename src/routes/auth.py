@@ -1,6 +1,4 @@
-from typing import List
-
-from fastapi import APIRouter, HTTPException, Depends, status, Path, Query, Security
+from fastapi import APIRouter, HTTPException, Depends, status, Security
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database.db import get_db
